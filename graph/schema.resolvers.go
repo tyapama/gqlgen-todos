@@ -5,29 +5,21 @@ package graph
 
 import (
 	"context"
-	"fmt"
-	"math/rand"
 
 	"github.com/tyapama/gqlgen-todos/graph/generated"
 	"github.com/tyapama/gqlgen-todos/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo := &model.Todo{
-		Text:   input.Text,
-		ID:     fmt.Sprintf("T%d", rand.Int()),
-		UserID: input.UserID, // fix this line
-	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+	return r.createTodo(ctx, input)
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.getTodos(ctx)
 }
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: obj.UserID, Name: "user " + obj.UserID}, nil
+	return r.getUser(ctx, obj)
 }
 
 // Mutation returns generated.MutationResolver implementation.
